@@ -161,9 +161,9 @@
 <wire x1="33.02" y1="1.27" x2="31.75" y2="1.778" width="0.3048" layer="21"/>
 <wire x1="31.75" y1="1.778" x2="33.02" y2="2.286" width="0.3048" layer="21"/>
 <wire x1="33.02" y1="2.286" x2="33.02" y2="1.27" width="0.3048" layer="21"/>
-<text x="1.524" y="7.366" size="1.27" layer="22" ratio="10" rot="MR180">PIR sensor rev 1.0</text>
-<text x="1.524" y="5.588" size="1.27" layer="22" ratio="10" rot="MR180">www.nrf24kits.com</text>
-<text x="1.524" y="3.81" size="1.27" layer="22" ratio="10" rot="MR180">2014-04-29</text>
+<text x="0.762" y="8.636" size="1.27" layer="22" font="vector" ratio="10" rot="MR180">PIR sensor rev 1.1</text>
+<text x="0.762" y="6.858" size="1.27" layer="22" font="vector" ratio="10" rot="MR180">www.nrf24kits.com</text>
+<text x="0.762" y="5.08" size="1.27" layer="22" font="vector" ratio="10" rot="MR180">2014-05-16</text>
 <text x="49.022" y="8.89" size="1.016" layer="21" ratio="10">reset</text>
 <text x="42.164" y="4.572" size="1.016" layer="21" ratio="10">connect</text>
 <text x="60.198" y="24.892" size="0.8128" layer="21" ratio="10">BUZZER</text>
