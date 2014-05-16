@@ -22,9 +22,11 @@
 */
 
 /////////////////////////////////////////////////////////////////////////////////////////////
-// This program sends a single byte command with ASCII value 'o' to the preconfigured node 
-// when motion is detected and reported by PIR mode, then waits for 5 sec before it read PIR sensor output again.
-// No power saving techniques is used in this version, thus the current power consumption makes it not very suitable for 
+// This program continiosly reads PIR module output and sends a single byte command with ASCII value 'o' 
+// to the preconfigured node when motion is detected, then waits for 5 sec before it starts monitoring PIR sensor output again.
+//
+// This is is just a hardware test POC program
+// No power interrupts or other saving techniques is used in this version, thus the current power consumption makes it not very suitable for 
 // operation from a battery 
 /////////////////////////////////////////////////////////////////////////////////////////////
  
@@ -48,9 +50,8 @@ RF24 radio(9,10);
 // Radio pipe addresses for the 2 nodes to communicate.
 const uint64_t pipes[2] = { 0xE7EEE7E700LL, 0xE7EEE7E700LL };
 
-char dataToSend = 'A';
-char dataRecv = 'A';
-int  attempts = 0;
+char dataToSend = 'z';
+char dataRecv = 'z';
 
 void openPipes()
 {
@@ -59,10 +60,6 @@ void openPipes()
 
     radio.openWritingPipe(txPipe);
     radio.openReadingPipe(1, rxPipe);
-   
-//    printf("listen on %#1x%lx\r\n", ((char*)&rxPipe)[4] & 0x000ff, rxPipe);
-//    printf("write to  %#1x%lx\r\n", ((char*)&txPipe)[4] & 0x000ff, txPipe);
-//    printf("\r\n");
 }
 
 
@@ -121,18 +118,10 @@ void loop()  {
     delay(100);
     digitalWrite(led, 0);
     
-    attempts = 0;
     dataToSend = 'o';
     dataRecv = 'z';
   }
   
-  
-  // do not loop forever
-  if(10 < attempts++) {
-    attempts = 0;
-    dataRecv = dataToSend;
-  }
-
   if (dataToSend != dataRecv)  {
     // First, stop listening so we can talk.
     radio.stopListening();
@@ -141,7 +130,6 @@ void loop()  {
     // Take the time, and send it.  This will block until complete
     digitalWrite(ledTx, HIGH);   
     delay(50);
-    unsigned long got_time = millis();
     bool ok = radio.write( &dataToSend, sizeof(dataToSend) );
     digitalWrite(ledTx, LOW);
     
