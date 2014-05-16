@@ -5259,7 +5259,7 @@ A3 Larger Frame</description>
 <part name="GND19" library="SparkFun" deviceset="GND" device=""/>
 <part name="P+8" library="SparkFun" deviceset="3.3V" device="" value="VCC"/>
 <part name="FRAME1" library="SparkFun-Aesthetics" deviceset="FRAME-A3" device=""/>
-<part name="JP1" library="endy-connectors" deviceset="M03" device="PTH"/>
+<part name="JP1" library="endy-connectors" deviceset="M03" device="PTH" value="Serial"/>
 <part name="GND20" library="SparkFun" deviceset="GND" device=""/>
 </parts>
 <sheets>
@@ -5329,10 +5329,12 @@ A3 Larger Frame</description>
 <attribute name="VALUE" x="90.424" y="77.216" size="1.778" layer="96"/>
 </instance>
 <instance part="P+3" gate="G$1" x="91.44" y="134.62"/>
-<instance part="JP2" gate="G$1" x="182.88" y="35.56">
-<attribute name="OC_NEWARK" x="182.88" y="35.56" size="1.778" layer="96" display="off"/>
-<attribute name="MF" x="182.88" y="35.56" size="1.778" layer="96" display="off"/>
-<attribute name="MPN" x="182.88" y="35.56" size="1.778" layer="96" display="off"/>
+<instance part="JP2" gate="G$1" x="195.58" y="33.02" smashed="yes">
+<attribute name="OC_NEWARK" x="195.58" y="33.02" size="1.778" layer="96" display="off"/>
+<attribute name="MF" x="195.58" y="33.02" size="1.778" layer="96" display="off"/>
+<attribute name="MPN" x="195.58" y="33.02" size="1.778" layer="96" display="off"/>
+<attribute name="NAME" x="190.5" y="38.608" size="1.27" layer="95"/>
+<attribute name="VALUE" x="190.5" y="25.908" size="1.27" layer="96"/>
 </instance>
 <instance part="C2" gate="G$1" x="93.98" y="63.5">
 <attribute name="OC_NEWARK" x="93.98" y="63.5" size="1.778" layer="96" display="off"/>
@@ -5536,8 +5538,11 @@ A3 Larger Frame</description>
 <instance part="GND19" gate="1" x="63.5" y="139.7"/>
 <instance part="P+8" gate="G$1" x="63.5" y="162.56"/>
 <instance part="FRAME1" gate="G$1" x="-142.24" y="-68.58"/>
-<instance part="JP1" gate="G$1" x="185.42" y="17.78" rot="R180"/>
-<instance part="GND20" gate="1" x="170.18" y="7.62"/>
+<instance part="JP1" gate="G$1" x="194.056" y="13.716" smashed="yes" rot="R180">
+<attribute name="VALUE" x="189.992" y="5.842" size="1.778" layer="96"/>
+<attribute name="NAME" x="188.976" y="19.558" size="1.27" layer="95"/>
+</instance>
+<instance part="GND20" gate="1" x="178.816" y="3.556"/>
 </instances>
 <busses>
 </busses>
@@ -5575,8 +5580,8 @@ A3 Larger Frame</description>
 </segment>
 <segment>
 <pinref part="JP2" gate="G$1" pin="6"/>
-<wire x1="198.12" y1="33.02" x2="190.5" y2="33.02" width="0.1524" layer="91"/>
-<label x="195.58" y="33.02" size="1.778" layer="95"/>
+<wire x1="210.82" y1="30.48" x2="203.2" y2="30.48" width="0.1524" layer="91"/>
+<label x="208.28" y="30.48" size="1.778" layer="95"/>
 </segment>
 <segment>
 <pinref part="C2" gate="G$1" pin="2"/>
@@ -5691,8 +5696,8 @@ A3 Larger Frame</description>
 <segment>
 <pinref part="JP1" gate="G$1" pin="3"/>
 <pinref part="GND20" gate="1" pin="GND"/>
-<wire x1="177.8" y1="15.24" x2="170.18" y2="15.24" width="0.1524" layer="91"/>
-<wire x1="170.18" y1="15.24" x2="170.18" y2="10.16" width="0.1524" layer="91"/>
+<wire x1="186.436" y1="11.176" x2="178.816" y2="11.176" width="0.1524" layer="91"/>
+<wire x1="178.816" y1="11.176" x2="178.816" y2="6.096" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="RESET" class="0">
@@ -5710,8 +5715,8 @@ A3 Larger Frame</description>
 </segment>
 <segment>
 <pinref part="JP2" gate="G$1" pin="5"/>
-<wire x1="165.1" y1="33.02" x2="175.26" y2="33.02" width="0.1524" layer="91"/>
-<label x="165.1" y="33.02" size="1.778" layer="95"/>
+<wire x1="177.8" y1="30.48" x2="187.96" y2="30.48" width="0.1524" layer="91"/>
+<label x="177.8" y="30.48" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="SCK" class="0">
@@ -5727,8 +5732,8 @@ A3 Larger Frame</description>
 </segment>
 <segment>
 <pinref part="JP2" gate="G$1" pin="3"/>
-<wire x1="165.1" y1="35.56" x2="175.26" y2="35.56" width="0.1524" layer="91"/>
-<label x="165.1" y="35.56" size="1.778" layer="95"/>
+<wire x1="177.8" y1="33.02" x2="187.96" y2="33.02" width="0.1524" layer="91"/>
+<label x="177.8" y="33.02" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="MISO" class="0">
@@ -5744,8 +5749,8 @@ A3 Larger Frame</description>
 </segment>
 <segment>
 <pinref part="JP2" gate="G$1" pin="1"/>
-<wire x1="165.1" y1="38.1" x2="175.26" y2="38.1" width="0.1524" layer="91"/>
-<label x="165.1" y="38.1" size="1.778" layer="95"/>
+<wire x1="177.8" y1="35.56" x2="187.96" y2="35.56" width="0.1524" layer="91"/>
+<label x="177.8" y="35.56" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="MOSI" class="0">
@@ -5761,8 +5766,8 @@ A3 Larger Frame</description>
 </segment>
 <segment>
 <pinref part="JP2" gate="G$1" pin="4"/>
-<wire x1="198.12" y1="35.56" x2="190.5" y2="35.56" width="0.1524" layer="91"/>
-<label x="195.58" y="35.56" size="1.778" layer="95"/>
+<wire x1="210.82" y1="33.02" x2="203.2" y2="33.02" width="0.1524" layer="91"/>
+<label x="208.28" y="33.02" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="TXO" class="0">
@@ -5773,8 +5778,8 @@ A3 Larger Frame</description>
 </segment>
 <segment>
 <pinref part="JP1" gate="G$1" pin="1"/>
-<wire x1="177.8" y1="20.32" x2="170.18" y2="20.32" width="0.1524" layer="91"/>
-<label x="170.18" y="20.32" size="1.778" layer="95"/>
+<wire x1="186.436" y1="16.256" x2="178.816" y2="16.256" width="0.1524" layer="91"/>
+<label x="178.816" y="16.256" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="D9" class="0">
@@ -5927,8 +5932,8 @@ A3 Larger Frame</description>
 </segment>
 <segment>
 <pinref part="JP1" gate="G$1" pin="2"/>
-<wire x1="177.8" y1="17.78" x2="170.18" y2="17.78" width="0.1524" layer="91"/>
-<label x="170.18" y="17.78" size="1.778" layer="95"/>
+<wire x1="186.436" y1="13.716" x2="178.816" y2="13.716" width="0.1524" layer="91"/>
+<label x="178.816" y="13.716" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="N$3" class="0">

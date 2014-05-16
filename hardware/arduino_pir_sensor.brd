@@ -1208,7 +1208,7 @@ design rules under a new name.</description>
 <attribute name="MPN" value="" x="25.908" y="18.542" size="0.8128" layer="27" ratio="10" rot="R270" display="off"/>
 <attribute name="MF" value="" x="25.908" y="18.542" size="0.8128" layer="27" ratio="10" rot="R270" display="off"/>
 </element>
-<element name="JP1" library="endy-connectors" package="1X03" value="" x="66.548" y="7.112" smashed="yes" rot="R270">
+<element name="JP1" library="endy-connectors" package="1X03" value="Serial" x="66.548" y="7.112" smashed="yes" rot="R270">
 <attribute name="NAME" x="62.1538" y="0.3048" size="1.27" layer="51" ratio="10"/>
 <attribute name="VALUE" x="63.373" y="8.382" size="1.27" layer="27" rot="R270"/>
 </element>
@@ -1860,13 +1860,6 @@ design rules under a new name.</description>
 <wire x1="58.293" y1="27.94" x2="58.42" y2="28.067" width="0.3048" layer="1"/>
 </signal>
 </signals>
-<errors>
-<approved hash="5,1,be3e40ceec6a62e1"/>
-<approved hash="5,1,844c3dfb137ebeb0"/>
-<approved hash="5,1,8a4c35e0106917b1"/>
-<approved hash="5,1,d92227c0d46912fd"/>
-<approved hash="6,16,c77451f88f381db6"/>
-</errors>
 </board>
 </drawing>
 </eagle>
