@@ -12,11 +12,11 @@ http://www.ebay.com/sch/i.html?_from=R40&_sacat=0&_nkw=wireless+pir+light+batter
 
 ### Images
 
-Top
+Top<br>
 ![Top](/docs/images/top.jpg)
 
-Back with PCB visible
+Back with PCB visible<br>
 ![Back with PCB](/docs/images/back_with_pcb.jpg)
 
-Unpopulated 2-layer PCB, front and back
+Unpopulated 2-layer PCB, front and back<br>
 ![PCB top and bottom](/docs/images/pcb_top_bottom.jpg)
