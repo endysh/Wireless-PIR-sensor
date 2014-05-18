@@ -5261,6 +5261,13 @@ A3 Larger Frame</description>
 <part name="FRAME1" library="SparkFun-Aesthetics" deviceset="FRAME-A3" device=""/>
 <part name="JP1" library="endy-connectors" deviceset="M03" device="PTH" value="Serial"/>
 <part name="GND20" library="SparkFun" deviceset="GND" device=""/>
+<part name="C17" library="SparkFun-Capacitors" deviceset="CAP" device="1206" value="10uF">
+<attribute name="MF" value=""/>
+<attribute name="MPN" value=""/>
+<attribute name="OC_NEWARK" value="unknown"/>
+</part>
+<part name="GND21" library="SparkFun" deviceset="GND" device=""/>
+<part name="P+9" library="SparkFun" deviceset="3.3V" device="" value="VCC"/>
 </parts>
 <sheets>
 <sheet>
@@ -5543,6 +5550,15 @@ A3 Larger Frame</description>
 <attribute name="NAME" x="188.976" y="19.558" size="1.27" layer="95"/>
 </instance>
 <instance part="GND20" gate="1" x="178.816" y="3.556"/>
+<instance part="C17" gate="G$1" x="83.82" y="63.5">
+<attribute name="OC_NEWARK" x="83.82" y="63.5" size="1.778" layer="96" display="off"/>
+<attribute name="MF" x="83.82" y="63.5" size="1.778" layer="96" display="off"/>
+<attribute name="MPN" x="83.82" y="63.5" size="1.778" layer="96" display="off"/>
+</instance>
+<instance part="GND21" gate="1" x="83.82" y="55.88"/>
+<instance part="P+9" gate="G$1" x="83.82" y="73.66" smashed="yes">
+<attribute name="VALUE" x="80.264" y="77.216" size="1.778" layer="96"/>
+</instance>
 </instances>
 <busses>
 </busses>
@@ -5698,6 +5714,11 @@ A3 Larger Frame</description>
 <pinref part="GND20" gate="1" pin="GND"/>
 <wire x1="186.436" y1="11.176" x2="178.816" y2="11.176" width="0.1524" layer="91"/>
 <wire x1="178.816" y1="11.176" x2="178.816" y2="6.096" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="GND21" gate="1" pin="GND"/>
+<pinref part="C17" gate="G$1" pin="2"/>
+<wire x1="83.82" y1="58.42" x2="83.82" y2="60.96" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="RESET" class="0">
@@ -6026,6 +6047,11 @@ A3 Larger Frame</description>
 <pinref part="C16" gate="G$1" pin="P$1"/>
 <pinref part="P+8" gate="G$1" pin="3.3V"/>
 <wire x1="63.5" y1="154.94" x2="63.5" y2="162.56" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="P+9" gate="G$1" pin="3.3V"/>
+<pinref part="C17" gate="G$1" pin="1"/>
+<wire x1="83.82" y1="73.66" x2="83.82" y2="68.58" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$1" class="0">
