@@ -5198,7 +5198,7 @@ A3 Larger Frame</description>
 <attribute name="OC_NEWARK" value="unknown"/>
 </part>
 <part name="GND14" library="SparkFun" deviceset="GND" device=""/>
-<part name="R12" library="SparkFun-Resistors" deviceset="RESISTOR" device="0603-RES" value="510K">
+<part name="R12" library="SparkFun-Resistors" deviceset="RESISTOR" device="0603-RES" value="47K">
 <attribute name="MF" value=""/>
 <attribute name="MPN" value=""/>
 <attribute name="OC_NEWARK" value="unknown"/>
