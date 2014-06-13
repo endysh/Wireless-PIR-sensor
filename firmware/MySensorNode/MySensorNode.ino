@@ -40,18 +40,20 @@
 #include <RF24.h>
 
 
-//#define ENABLE_SERIAL
-
-//defines number of WDT intervals (~8 sec) to keep PIR sensor disabled 
-//after a report has been sent
-#define PIR_DISABLE_INTERVAL 4
-
-//this sensor has only one child sensor
-#define CHILD_ID          1
+#define ENABLE_SERIAL
 
 //MySensor network node ID
 #define NODE_RADIO_ID     0x51
 
+//this sensor has only one child sensor
+#define CHILD_ID          1
+
+#define WDT_INTERVAL      8 //interval between WDT interrupts in seconds
+#define REPORT_TIMEOUT    (10/WDT_INTERVAL)
+
+//defines number of WDT intervals (~8 sec) to keep PIR sensor disabled 
+//after a report has been sent
+#define PIR_DISABLE_INTERVAL 4
 
 #define BUTTON_PIN        A1 // Arduino Digital I/O pin for button/reed switch
 #define PHOTO_CELL_PIN    A2 // Arduino Digital I/O pin for photo cell input
@@ -64,11 +66,17 @@
 #define PIR_INPUT         2  // the pin that connected to PIT output
 #define BATTERY_LEVEL     A0 // the pin that connected to battery
 
-Sensor gw;
+
+uint16_t wdt_counter = 0;
+uint16_t report_counter = 1;
+
 uint8_t pir_disable_counter = 1;  //disable the sensor for the first 8 sec, let all transition precesses to settle down
 uint8_t pir_enable_counter = 0;
 uint8_t dataToSend = 0;
 uint8_t dataSent = 0;
+
+Sensor gw;
+
 
 /////////////////////////////////////////////////////////////////
 //  Returns:     Nothing.
@@ -92,7 +100,7 @@ void processPIR()
 //  Parameters:  None.
 //
 //  Description: Watchdog Interrupt Service. This
-//               is executed when watchdog timed out, 
+//               is executed when watchdog times out, 
 //               approximately every 8 seconds
 /////////////////////////////////////////////////////////////////
 ISR(WDT_vect)
@@ -100,6 +108,7 @@ ISR(WDT_vect)
   if(pir_disable_counter != pir_enable_counter) {
     pir_enable_counter += 1;
   }
+  wdt_counter++;
 }
 
 
@@ -277,31 +286,48 @@ void loop()
   //enable/disable PIR
   digitalWrite(PIR_ENABLE, (pir_disable_counter == pir_enable_counter)?1:0);
   
+  //send motion detected report
   if(dataToSend != dataSent) {
     // Send in the new value
 #ifdef ENABLE_SERIAL
-    Serial.println("send a report");
+    Serial.println("=================================");
+    Serial.println("send motion detected event");
 #endif //#ifdef ENABLE_SERIAL
     gw.sendVariable(CHILD_ID, V_TRIPPED, "1");  
     dataSent = dataToSend;
-
-  } else {
-#ifdef ENABLE_SERIAL
-    Serial.println(ADCSRA);
-    Serial.print("battery level: ");
-    delay(200);
-    Serial.println(analogRead(BATTERY_LEVEL));
-    Serial.print("light level: ");
-    Serial.println(readLightLevel());
-    Serial.println("go to sleep");
-    delay(100);
-#endif //#ifdef ENABLE_SERIAL
-    // set sleep mode
-    PowerDownSleep();
-#ifdef ENABLE_SERIAL
-    Serial.println("woke up");
-#endif //#ifdef ENABLE_SERIAL
   }
+ 
+  // send regular report
+  if(report_counter == wdt_counter) {
+    report_counter += REPORT_TIMEOUT;
+    
+    uint16_t batteryLevel = analogRead(BATTERY_LEVEL);
+    uint16_t lightLevel = readLightLevel();
+#ifdef ENABLE_SERIAL
+    Serial.println("=================================");
+    Serial.println("send a report");
+    Serial.print("battery level: ");
+    Serial.println(batteryLevel);
+    Serial.print("light level: ");
+    Serial.println(lightLevel);
+    Serial.println("go to sleep");
+#endif //#ifdef ENABLE_SERIAL
+
+    gw.sendBatteryLevel(batteryLevel);
+    gw.sendVariable(CHILD_ID, V_LIGHT_LEVEL, lightLevel);
+  }
+
+
+#ifdef ENABLE_SERIAL
+  delay(100);
+#endif //#ifdef ENABLE_SERIAL
   
+  //power down the sensor till next interrupt
+  PowerDownSleep();
+  
+#ifdef ENABLE_SERIAL
+  Serial.println("woke up");
+#endif //#ifdef ENABLE_SERIAL
+
 } 
 
