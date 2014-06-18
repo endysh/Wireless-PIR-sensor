@@ -49,11 +49,11 @@
 #define CHILD_ID          1
 
 #define WDT_INTERVAL      8 //interval between WDT interrupts in seconds
-#define REPORT_TIMEOUT    (10/WDT_INTERVAL)
+#define REPORT_TIMEOUT    (60*60/WDT_INTERVAL) //make regular report interval 60 minutes
 
 //defines number of WDT intervals (~8 sec) to keep PIR sensor disabled 
 //after a report has been sent
-#define PIR_DISABLE_INTERVAL 4
+#define PIR_DISABLE_INTERVAL 30 //~4 mins
 
 #define BUTTON_PIN        A1 // Arduino Digital I/O pin for button/reed switch
 #define PHOTO_CELL_PIN    A2 // Arduino Digital I/O pin for photo cell input
@@ -87,7 +87,7 @@ Sensor gw;
 //               it disables the PIR sensor for several WDT intervals
 //               in order to conserve the energy
 /////////////////////////////////////////////////////////////////
-void processPIR()
+ISR(PIR_vect)
 {
   if(pir_disable_counter == pir_enable_counter) {
     pir_disable_counter += PIR_DISABLE_INTERVAL;
@@ -171,11 +171,12 @@ uint16_t readLightLevel()
   
   pinMode(PHOTO_CELL_POWER, OUTPUT);
   digitalWrite(PHOTO_CELL_POWER, HIGH);
-  delay(20);
-  Result = analogRead(PHOTO_CELL_PIN);
+  delay(10);
+  Result = 1024 - analogRead(PHOTO_CELL_PIN);
 
   // Setup the photo cell pins as input pins
   pinMode(PHOTO_CELL_POWER, INPUT);
+  
   // Activate internal pull-down
   digitalWrite(PHOTO_CELL_POWER, LOW);
   digitalWrite(PHOTO_CELL_PIN, LOW);
@@ -266,7 +267,7 @@ void setup()
   //////////////////////////////////////////////////////////////////////////
   //     Setup PIR interrupts
   //////////////////////////////////////////////////////////////////////////
-  attachInterrupt(0, processPIR, FALLING);
+  attachInterrupt(0, PIR_vect, FALLING);
 
 #ifdef ENABLE_SERIAL
   Serial.println("");
