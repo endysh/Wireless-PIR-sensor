@@ -5203,7 +5203,7 @@ A3 Larger Frame</description>
 <attribute name="MPN" value=""/>
 <attribute name="OC_NEWARK" value="unknown"/>
 </part>
-<part name="R13" library="SparkFun-Resistors" deviceset="RESISTOR" device="0603-RES" value="2M">
+<part name="R13" library="SparkFun-Resistors" deviceset="RESISTOR" device="0603-RES" value="680K">
 <attribute name="MF" value=""/>
 <attribute name="MPN" value=""/>
 <attribute name="OC_NEWARK" value="unknown"/>
@@ -5237,7 +5237,7 @@ A3 Larger Frame</description>
 <attribute name="OC_NEWARK" value="unknown"/>
 </part>
 <part name="U4" library="modules" deviceset="NRF24L01+_MODULE" device=""/>
-<part name="R15" library="SparkFun-Resistors" deviceset="RESISTOR" device="0603-RES" value="2M">
+<part name="R15" library="SparkFun-Resistors" deviceset="RESISTOR" device="0603-RES" value="100">
 <attribute name="MF" value=""/>
 <attribute name="MPN" value=""/>
 <attribute name="OC_NEWARK" value="unknown"/>
