@@ -36,7 +36,13 @@
 #include "RF24.h"
 
 //#define ENABLE_SERIAL 
-#define PIR_DISABLE_INTERVAL 4
+#define PIR_DISABLE_INTERVAL    8  //disable the PIR sensor for about 64 seconds (8 WDT intervals)
+
+//////////////////////////////////////////////////////////////////////////
+// Replace this value with the address of your receiver node
+//////////////////////////////////////////////////////////////////////////
+#define RECEIVER_ADDRESS        0xE7E7E7E700LL
+//////////////////////////////////////////////////////////////////////////
 
 int led = A4;         // the pin that the LED is attached to
 int buzzer = 5;       // the pin that the Buzzer is attached to
@@ -48,17 +54,22 @@ int ledTx = led;
 
 unsigned int pir_disable_counter = 0;
 unsigned int pir_enable_counter = 0;
+char dataToSend = 'z';
 
 
 // Set up nRF24L01 radio on SPI bus plus pins 9 & 10 
 RF24 radio(9,10);
 
-// Radio pipe addresses for the 2 nodes to communicate.
-const uint64_t pipes[2] = { 0xE7E7E7E700LL, 0xE7E7E7E700LL }; // !!! DO NOT THIS COMMIT VALUE !!!
+// Radio pipe addresses for the node to communicate.
+const uint64_t pipes[2] = { RECEIVER_ADDRESS, RECEIVER_ADDRESS };
 
-char dataToSend = 'z';
-char dataRecv = 'z';
 
+//////////////////////////////////////////////////////////////////////////
+//  Returns:     Nothing.
+//  Parameters:  None.
+//
+//  Description: Sets communication pipes 
+//////////////////////////////////////////////////////////////////////////
 void openPipes()
 {
     uint64_t txPipe = pipes[0];
@@ -69,7 +80,7 @@ void openPipes()
 }
 
 
-/////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 //  Returns:     Nothing.
 //  Parameters:  None.
 //
@@ -77,25 +88,24 @@ void openPipes()
 //               This is executed when PIR sensor sense a movement,
 //               it disables the PIR sensor for several WDT intervals
 //               in order to conserve the energy
-/////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 void processPIR()
 {
   if(pir_disable_counter == pir_enable_counter) {
     pir_disable_counter += PIR_DISABLE_INTERVAL;
-    dataToSend = 'o';
-    dataRecv = 'z';
+    dataToSend = 'I';  //send 'timer' command
   }
 }
 
 
-/////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 //  Returns:     Nothing.
 //  Parameters:  None.
 //
 //  Description: Watchdog Interrupt Service. This
 //               is executed when watchdog timed out, 
 //               approximately every 8 seconds
-/////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 ISR(WDT_vect)
 {
   if(pir_disable_counter != pir_enable_counter) {
@@ -104,18 +114,18 @@ ISR(WDT_vect)
 }
 
 
-/////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 //  Returns:     Nothing.
 //  Parameters:  None.
 //
 //  Description: Enters the arduino into sleep mode.
-/////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 void enterSleep(void)
 {
-  set_sleep_mode(SLEEP_MODE_PWR_DOWN);   /* EDIT: could also use SLEEP_MODE_PWR_DOWN for lowest power consumption. */
+  set_sleep_mode(SLEEP_MODE_PWR_DOWN);
   sleep_enable();
   
-  //turn off peripherals
+  // Turn off peripherals
   ADCSRA = 0;
   PRR = 0
       | (1<<PRTWI)     // turn off TWI
@@ -126,17 +136,22 @@ void enterSleep(void)
       | (1<<PRADC)     // turn off ADC
       | 0;
 
-
-  //shut off BOD:
+  // Shut off BOD:
   MCUCR = _BV (BODS) | _BV (BODSE);  // turn on brown-out enable select
   MCUCR = _BV (BODS);        // this must be done within 4 clock cycles of above
-
   
   // Now enter sleep mode.
   sleep_cpu();
   
-  // The program will continue from here after the WDT timeout
+  ////////////////////////////////////////////////////////////////////////
+  // Sleeping here, waiting for an interrupt ...
+  ////////////////////////////////////////////////////////////////////////
+  
+
+  ////////////////////////////////////////////////////////////////////////
+  // The program will continue from here after the WDT timeout ot PIR interrupt
   // First thing to do is disable sleep.
+  ////////////////////////////////////////////////////////////////////////
   sleep_disable(); 
   
   // Re-enable the peripherals.
@@ -150,7 +165,12 @@ void enterSleep(void)
 }
 
 
-// the setup routine runs once when you press reset:
+//////////////////////////////////////////////////////////////////////////
+//  Returns:     Nothing.
+//  Parameters:  None.
+//
+//  Description: the setup routine runs once when you press reset:
+//////////////////////////////////////////////////////////////////////////
 void setup()  { 
   
 #ifdef ENABLE_SERIAL
@@ -161,16 +181,14 @@ void setup()  {
   Serial.println("=====================================");
 #endif //#ifdef ENABLE_SERIAL
   
-  // declare pin 9 to be an output:
+  // set pins mode
   pinMode(led, OUTPUT);
   pinMode(buzzer, OUTPUT);
   pinMode(PIR_input, INPUT);
   pinMode(PIR_enable, OUTPUT);
   digitalWrite(PIR_enable, 1);
   
-  //
   // Setup and configure rf radio
-  //
   radio.begin();
 
   // set output level
@@ -193,19 +211,15 @@ void setup()  {
   // improve reliability
   radio.setPayloadSize(1);
 
-  //
   // Dump the configuration of the rf unit for debugging
-  //
   radio.printDetails();
   
-  //
   // Open pipes to other nodes for communication
-  //
   openPipes();
   
-  //////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////
   //     Setup the WDT interrupt
-  //////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////
   // Clear the reset flag.
   MCUSR &= ~(1<<WDRF);
   
@@ -213,24 +227,28 @@ void setup()  {
   // set WDCE (This will allow updates for 4 clock cycles).
   WDTCSR |= (1<<WDCE) | (1<<WDE);
 
-  // set new watchdog timeout prescaler value
+  // Set new watchdog timeout prescaler value
   WDTCSR = 1<<WDP0 | 1<<WDP3; // 8.0 seconds 
   
   // Enable the WD interrupt (note no reset).
   WDTCSR |= _BV(WDIE);
   
   
-  //////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////
   //     Setup PIR interrupts
-  //////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////
   attachInterrupt(0, processPIR, FALLING);
-//  attachInterrupt(1, processPIR, RISING);
 } 
 
-// the loop routine runs over and over again forever:
+//////////////////////////////////////////////////////////////////////////
+//  Returns:     Nothing.
+//  Parameters:  None.
+//
+//  Description: the main loop routine runs over and over again forever
+//////////////////////////////////////////////////////////////////////////
 void loop()  { 
 
-  if (dataToSend != dataRecv)  {
+  if (dataToSend != 'z')  {
 #ifdef ENABLE_SERIAL
     Serial.println("send a signal");
 #endif //#ifdef ENABLE_SERIAL
@@ -244,17 +262,15 @@ void loop()  {
     
     // Take the time, and send it.  This will block until complete
     digitalWrite(ledTx, HIGH);   
-    delay(50);
     bool ok = radio.write( &dataToSend, sizeof(dataToSend) );
+    delay(50);
     digitalWrite(ledTx, LOW);
     
-    // Now, continue listening
-    unsigned long started_waiting_at = millis();
-    delay(10);
+    // Now, complete sending
     radio.startListening();
    
     if(!ok) {
-      // blink LED several times in case of transmission error
+      // blink LED several times in case of a transmission error
       digitalWrite(ledTx, HIGH);
       delay(50);
       digitalWrite(ledTx, LOW);
@@ -268,11 +284,12 @@ void loop()  {
       digitalWrite(ledTx, LOW);
     }
     
+    // We are done with the command transmition, power down the radio
     radio.stopListening();
     delay(200);  
     radio.powerDown();
     
-    dataToSend = dataRecv = 'z';
+    dataToSend = 'z';
     
   } else {
 #ifdef ENABLE_SERIAL
@@ -282,9 +299,8 @@ void loop()  {
     // set sleep mode
     enterSleep();
 
-    //enable/disable PIR
-    digitalWrite(PIR_enable, (pir_disable_counter == pir_enable_counter)?1:0);
+    // enable/disable PIR
+    digitalWrite(PIR_enable, (pir_disable_counter == pir_enable_counter) ? 1 : 0);
   }
-    
 }
 
